@@ -35,7 +35,7 @@ public class BatchApplication {
         DefaultJobParametersValidator defaultJobParametersValidator = new
                 DefaultJobParametersValidator(
                     new String[]{"fileName"},
-                    new String[]{"name", "run.id"});
+                    new String[]{"name", "currentDate"});
 
         defaultJobParametersValidator.afterPropertiesSet();
 
@@ -49,8 +49,8 @@ public class BatchApplication {
     public Job job() {
         return this.jobBuilderFactory.get("basicJob")
                 .start(step1())
-                .incrementer(new RunIdIncrementer())
                 .validator(validator())
+                .incrementer(new DailyJobTimestamper())
                 .build();
     }
 
