@@ -35,7 +35,7 @@ public class BatchApplication {
         DefaultJobParametersValidator defaultJobParametersValidator = new
                 DefaultJobParametersValidator(
                 new String[]{"fileName"},
-                new String[]{"name", "currentDate"});
+                new String[]{"name", "currentDate", "message"});
 
         defaultJobParametersValidator.afterPropertiesSet();
 
