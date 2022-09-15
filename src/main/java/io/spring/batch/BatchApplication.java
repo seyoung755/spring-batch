@@ -51,6 +51,7 @@ public class BatchApplication {
                 .start(step1())
                 .validator(validator())
                 .incrementer(new DailyJobTimestamper())
+                .listener(new JobLoggerListener())
                 .build();
     }
 
