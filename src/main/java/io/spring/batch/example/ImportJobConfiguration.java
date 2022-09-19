@@ -1,14 +1,18 @@
 package io.spring.batch.example;
 
+import io.spring.batch.example.domain.CustomerAddressUpdate;
+import io.spring.batch.example.domain.CustomerContactUpdate;
+import io.spring.batch.example.domain.CustomerNameUpdate;
+import io.spring.batch.example.domain.CustomerUpdate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.batch.item.file.transform.PatternMatchingCompositeLineTokenizer;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,5 +89,45 @@ public class ImportJobConfiguration {
         lineTokenizer.setTokenizers(tokenizers);
 
         return lineTokenizer;
+    }
+
+    @Bean
+    public FieldSetMapper<CustomerUpdate> customerUpdateFieldSetMapper() {
+        return fieldSet -> {
+            switch (fieldSet.readInt("recordId")) {
+                case 1:
+                    return new CustomerNameUpdate(
+                            fieldSet.readLong("customerId"),
+                            fieldSet.readString("firstName"),
+                            fieldSet.readString("middleName"),
+                            fieldSet.readString("lastName"));
+                case 2:
+                    return new CustomerAddressUpdate(
+                            fieldSet.readLong("customerId"),
+                            fieldSet.readString("address1"),
+                            fieldSet.readString("address2"),
+                            fieldSet.readString("city"),
+                            fieldSet.readString("state"),
+                            fieldSet.readString("postalCode"));
+                case 3:
+                    String rawPreference = fieldSet.readString("notificationPreference");
+
+                    Integer notificationPreference = null;
+
+                    if (StringUtils.hasText(rawPreference)) {
+                        notificationPreference = Integer.parseInt(rawPreference);
+                    }
+
+                    return new CustomerContactUpdate(
+                            fieldSet.readLong("customerId"),
+                            fieldSet.readString("emailAddress"),
+                            fieldSet.readString("homePhone"),
+                            fieldSet.readString("cellPhone"),
+                            fieldSet.readString("workPhone"),
+                            notificationPreference);
+                default:
+                    throw new IllegalArgumentException("Invalid record type was found:" + fieldSet.readInt("recordId"));
+            }
+        };
     }
 }
