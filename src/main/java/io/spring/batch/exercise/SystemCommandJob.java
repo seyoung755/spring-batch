@@ -1,4 +1,4 @@
-package io.spring.batch;
+package io.spring.batch.exercise;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -18,7 +18,7 @@ public class SystemCommandJob {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job job() {
+    public Job job_3() {
         return this.jobBuilderFactory.get("systemCommandJob")
                 .start(systemCommandStep())
                 .build();

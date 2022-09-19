@@ -1,6 +1,6 @@
-package io.spring.batch;
+package io.spring.batch.exercise;
 
-import io.spring.batch.service.CustomService;
+import io.spring.batch.exercise.service.CustomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

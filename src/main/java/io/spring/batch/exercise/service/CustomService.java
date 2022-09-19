@@ -1,4 +1,4 @@
-package io.spring.batch.service;
+package io.spring.batch.exercise.service;
 
 public class CustomService {
 
